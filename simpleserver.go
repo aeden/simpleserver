@@ -25,7 +25,10 @@ func main() {
 
 	hostAndPort := net.JoinHostPort(bindAddress, strconv.Itoa(bindPort))
 	log.Printf("Running on %v", hostAndPort)
-	http.ListenAndServe(hostAndPort, router())
+	err := http.ListenAndServe(hostAndPort, router())
+	if err != nil {
+		log.Fatalf("Error starting server: %v", err)
+	}
 }
 
 func router() http.Handler {
