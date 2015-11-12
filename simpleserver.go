@@ -1,13 +1,34 @@
 package main
 
 import (
-	"github.com/julienschmidt/httprouter"
+	"flag"
 	"io/ioutil"
 	"log"
+	"net"
 	"net/http"
+	"strconv"
+
+	"github.com/julienschmidt/httprouter"
+)
+
+var (
+	defaultBindAddress = "127.0.0.1"
+	defaultBindPort    = 3000
 )
 
 func main() {
+	var bindAddress string
+	var bindPort int
+
+	flag.StringVar(&bindAddress, "address", defaultBindAddress, "the address to bind the server to")
+	flag.IntVar(&bindPort, "port", defaultBindPort, "the port to bind the server to")
+
+	hostAndPort := net.JoinHostPort(bindAddress, strconv.Itoa(bindPort))
+	log.Printf("Running on %v", hostAndPort)
+	http.ListenAndServe(hostAndPort, router())
+}
+
+func router() http.Handler {
 	router := httprouter.New()
 	router.GET("/", func(res http.ResponseWriter, req *http.Request, params httprouter.Params) {
 		log.Printf("GET /")
@@ -31,7 +52,6 @@ func main() {
 	router.DELETE("/", func(res http.ResponseWriter, req *http.Request, params httprouter.Params) {
 		log.Printf("DELETE /")
 	})
-	hostAndPort := "localhost:3000"
-	log.Printf("Running on %v", hostAndPort)
-	http.ListenAndServe(hostAndPort, router)
+
+	return router
 }
