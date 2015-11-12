@@ -5,6 +5,6 @@ A simple Go HTTP server for debugging.
 Install go, then run the server:
 
 ```
-go get github.com/go-martini/martini
-go run simpleserver
+go get github.com/julienschmidt/httprouter
+go run simpleserver.go
 ```
